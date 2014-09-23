@@ -92,7 +92,7 @@ public interface GraphDriver {
 	 * @return Map of vertices with their property. ( V -> P )
 	 * @throws IOException
 	 */
-	public abstract Map<String, String> collectVerticesWithProperty(String propertyURI) throws IOException;
+	public abstract Map<String, Object> collectVerticesWithProperty(String propertyURI) throws IOException;
 
 	/**
 	 * Collect edges with given URI.

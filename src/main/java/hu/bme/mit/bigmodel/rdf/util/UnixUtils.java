@@ -19,24 +19,54 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.SequenceInputStream;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.environment.EnvironmentUtils;
 import org.apache.commons.io.IOUtils;
 
 public class UnixUtils {
 	
 	public static String createTempFileFromScript(final String script) throws IOException, FileNotFoundException {
-		final InputStream scriptInputStream = UnixUtils.class.getResourceAsStream("/scripts/" + script);
+		return createTempFileFromResource(script, "sh", true);
+	}
+	
+	public static String createTempFileFromResource(final String script, final String extension, final boolean executable) throws IOException, FileNotFoundException {
+		final InputStream scriptInputStream = UnixUtils.class.getResourceAsStream("/" + script);
 		
 		// create a temporary file
-		final File scriptTempFile = File.createTempFile("rdf-graph-driver-", ".sh");
+		final File scriptTempFile = File.createTempFile("rdf-graph-driver-", extension);
         scriptTempFile.deleteOnExit();
         try (FileOutputStream out = new FileOutputStream(scriptTempFile)) {
             IOUtils.copy(scriptInputStream, out);
         }
-        scriptTempFile.setExecutable(true);
+        scriptTempFile.setExecutable(executable);
 		
 		final String command = scriptTempFile.getAbsolutePath();
 		return command;
+	}
+	
+	public static void execResourceScript(final String command, final Map<String, String> environmentVariables) throws FileNotFoundException, IOException {
+		String tempScript = UnixUtils.createTempFileFromScript(command);
+		exec(tempScript, environmentVariables);
+	}
+	
+	public static void execResourceScript(final String command, final String arguments, final Map<String, String> environmentVariables) throws FileNotFoundException, IOException {
+		String tempScript = UnixUtils.createTempFileFromScript(command);
+		exec(tempScript + " " + arguments, environmentVariables);		
+	}
+	
+	public static void exec(final String command, final Map<String, String> environmentVariables) throws FileNotFoundException, IOException {
+		final Map<?, ?> executionEnvironment = EnvironmentUtils.getProcEnvironment();
+		for (Entry<String, String> environmentVariable : environmentVariables.entrySet()) {
+			String keyAndValue = environmentVariable.getKey() + "=" + environmentVariable.getValue();
+			EnvironmentUtils.addVariableToEnvironment(executionEnvironment, keyAndValue);
+		}
+		
+		CommandLine cmdLine = CommandLine.parse(command);
+		DefaultExecutor executor = new DefaultExecutor();
+		executor.execute(cmdLine, executionEnvironment);
 	}
 	
 	public static Process run(final String command, final boolean showOutput, final Map<String, String> environment) throws IOException {

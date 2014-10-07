@@ -66,6 +66,7 @@ public class UnixUtils {
 		
 		CommandLine cmdLine = CommandLine.parse(command);
 		DefaultExecutor executor = new DefaultExecutor();
+		// throws exception if exitcode != 0
 		executor.execute(cmdLine, executionEnvironment);
 	}
 	

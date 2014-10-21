@@ -12,7 +12,6 @@
 package hu.bme.mit.bigmodel.rdf;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -80,7 +79,7 @@ public interface GraphDriver {
      * @return List of the URIs of the vertices.
      * @throws IOException
      */
-    public List<BigInteger> collectVertices(String typeURI) throws IOException;
+    public List<Long> collectVertices(String typeURI) throws IOException;
 
     /**
      * Collect the vertices with given property.
@@ -92,7 +91,7 @@ public interface GraphDriver {
      * @return Map of vertices with their property. ( V -> P )
      * @throws IOException
      */
-    public Map<BigInteger, ? extends Object> collectVerticesWithProperty(String propertyURI) throws IOException;
+    public Map<Long, ? extends Object> collectVerticesWithProperty(String propertyURI) throws IOException;
 
     /**
      * Collect edges with given URI.
@@ -104,7 +103,7 @@ public interface GraphDriver {
      * @return Multimap of vertex pairs connected. ( S -> O )
      * @throws IOException
      */
-    public Multimap<BigInteger, BigInteger> collectEdges(String edgeURI) throws IOException;
+    public Multimap<Long, Long> collectEdges(String edgeURI) throws IOException;
 
     /**
      * Collect vertices from the given type and the associated property values of the given type.
@@ -118,7 +117,7 @@ public interface GraphDriver {
      * @return Multimap of the vertices and the connecting property values. (V -> P)
      * @throws IOException
      */
-    public Multimap<BigInteger, BigInteger> collectOutgoingEdges(String vertexTypeURI, String edgeURI)
+    public Multimap<Long, Long> collectOutgoingEdges(String vertexTypeURI, String edgeURI)
             throws IOException;
 
     /**
@@ -196,7 +195,7 @@ public interface GraphDriver {
      *            Node identifier number.
      * @return URI of the Node.
      */
-    public String getURIForBI(BigInteger id);
+    public String getURIForBI(Long id);
 
     /**
      * Get the URI of the Node identified by the given id.
@@ -214,6 +213,6 @@ public interface GraphDriver {
      *            Node identifier String.
      * @return ID of the Node.
      */
-    public BigInteger getBIForURI(String URI);
+    public Long getBIForURI(String URI);
 
 }

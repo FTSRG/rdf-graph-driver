@@ -84,43 +84,12 @@ public class UnixUtils {
 
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		PumpStreamHandler streamHandler = new PumpStreamHandler(byteArrayOutputStream);
-		CommandLine commandLine = CommandLine.parse(command);
-
-//		CommandLine commandLine = new CommandLine("/bin/bash");
-//		commandLine.addArguments(new String[] { "-c", command }, false);
-//		new DefaultExecutor().execute(commandLine);
-
-		DefaultExecutor executor = new DefaultExecutor();
-		executor.setStreamHandler(streamHandler);
-
-		
-		// throws exception if exitcode != 0
-		executor.execute(commandLine, executionEnvironment);
-		
-		return toBufferedReader(byteArrayOutputStream);
-	}
-
-	
-	public static BufferedReader execWithBash(final String command, final Map<String, String> environmentVariables,
-			boolean showOutput) throws FileNotFoundException, IOException {
-		final Map<?, ?> executionEnvironment = EnvironmentUtils.getProcEnvironment();
-		for (Entry<String, String> environmentVariable : environmentVariables.entrySet()) {
-			String keyAndValue = environmentVariable.getKey() + "=" + environmentVariable.getValue();
-			EnvironmentUtils.addVariableToEnvironment(executionEnvironment, keyAndValue);
-		}
-
-		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		PumpStreamHandler streamHandler = new PumpStreamHandler(byteArrayOutputStream);
 
 		CommandLine commandLine = new CommandLine("/bin/bash");
 		commandLine.addArguments(new String[] { "-c", command }, false);
-		new DefaultExecutor().execute(commandLine);
-
+		
 		DefaultExecutor executor = new DefaultExecutor();
 		executor.setStreamHandler(streamHandler);
-
-		
-		// throws exception if exitcode != 0
 		executor.execute(commandLine, executionEnvironment);
 		
 		return toBufferedReader(byteArrayOutputStream);

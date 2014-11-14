@@ -1,2 +1,2 @@
 script:
-  - scripts/build.sh
+  - scripts/build.sh --resolveDependencies

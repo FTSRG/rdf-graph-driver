@@ -6,4 +6,4 @@ cd ../..
 git clone https://github.com/FTSRG/mondo-utils.git
 cd mondo-utils
 git pull
-mvn clean install
+scripts/build.sh

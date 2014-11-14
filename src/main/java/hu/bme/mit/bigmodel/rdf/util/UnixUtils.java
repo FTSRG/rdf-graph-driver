@@ -63,9 +63,8 @@ public class UnixUtils {
 		String scriptCommand = tempScript + " " + arguments;
 		BufferedReader reader = exec(scriptCommand, environmentVariables, showOutput);
 		
-		System.out.println(scriptCommand);
-		
 		if (showOutput) {
+			System.out.println("Command: " + scriptCommand);
 			reader.readLine();
 			String line;
 			while ((line = reader.readLine()) != null) {

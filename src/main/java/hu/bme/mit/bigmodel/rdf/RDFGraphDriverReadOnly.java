@@ -17,6 +17,6 @@ public interface RDFGraphDriverReadOnly {
 
 	public Multimap<Long, Long> collectEdge(String type);
 
-	public Map<Long, String> collectProperty(String propertyName);
+	public Map<Long, String> collectProperty(String type);
 
 }

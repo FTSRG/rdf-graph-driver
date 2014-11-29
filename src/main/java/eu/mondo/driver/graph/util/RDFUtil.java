@@ -1,6 +1,6 @@
-package hu.bme.mit.bigmodel.rdf;
+package eu.mondo.driver.graph.util;
 
-public class RDFHelper {
+public class RDFUtil {
 
 	public static String brackets(String URL) {
 		if (URL.startsWith("<")) {
@@ -9,5 +9,5 @@ public class RDFHelper {
 			return "<" + URL + ">";
 		}
 	}
-	
+
 }

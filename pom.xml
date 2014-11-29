@@ -39,6 +39,9 @@
 			<resource>
 				<directory>src/main/java</directory>
 			</resource>
+			<resource>
+				<directory>src/main/test</directory>
+			</resource>
 		</resources>
 	</build>
 
@@ -72,7 +75,6 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.11</version>
-			<scope>test</scope>
 		</dependency>
 		
 	</dependencies>

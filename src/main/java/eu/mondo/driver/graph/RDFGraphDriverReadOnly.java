@@ -38,7 +38,7 @@ public interface RDFGraphDriverReadOnly {
 	 * (( V )) --[ propertyURI ] -> (( P ))
 	 * 
 	 * @param type
-	 *            Vertices with type of property are collected.
+	 *            Vertices with this type of property are collected.
 	 * @return Map of vertices with their property. ( V -> P )
 	 * @throws IOException
 	 */

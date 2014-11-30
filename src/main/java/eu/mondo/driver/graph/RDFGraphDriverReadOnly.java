@@ -19,7 +19,8 @@ public interface RDFGraphDriverReadOnly {
 	 * 
 	 * * (( V )) --[ rdf:type ] -> [ typeURI ]
 	 * 
-	 * @param type Vertices with this type URI are collected.
+	 * @param type
+	 *            Vertices with this type URI are collected.
 	 * @return List of the URIs of the vertices.
 	 * @throws IOException
 	 */
@@ -28,9 +29,10 @@ public interface RDFGraphDriverReadOnly {
 	/**
 	 * Collect edges with given URI.
 	 * 
-     * (( S )) --[ edgeURI ] -> (( O ))
-     * 
-	 * @param type Vertex pairs connected with this type of edge are collected.
+	 * (( S )) --[ edgeURI ] -> (( O ))
+	 * 
+	 * @param type
+	 *            Vertex pairs connected with this type of edge are collected.
 	 * @return Multimap of vertex pairs connected. ( S -> O )
 	 * @throws IOException
 	 */
@@ -41,7 +43,8 @@ public interface RDFGraphDriverReadOnly {
 	 * 
 	 * (( V )) --[ propertyURI ] -> (( P ))
 	 * 
-	 * @param type Vertices with this type of property are collected.
+	 * @param type
+	 *            Vertices with this type of property are collected.
 	 * @return Map of vertices with their property. ( V -> P )
 	 * @throws IOException
 	 */

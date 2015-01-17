@@ -2,7 +2,6 @@ package eu.mondo.driver.graph;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 import com.google.common.collect.Multimap;
 
@@ -18,7 +17,7 @@ public interface RDFGraphDriverReadOnly {
 	 * @return List of the URIs of the vertices.
 	 * @throws IOException
 	 */
-	public List<Long> collectVertex(String type) throws IOException;
+	public List<Long> collectVertices(String type) throws IOException;
 
 	/**
 	 * Collect edges with given URI.
@@ -30,7 +29,7 @@ public interface RDFGraphDriverReadOnly {
 	 * @return Multimap of vertex pairs connected. ( S -> O )
 	 * @throws IOException
 	 */
-	public Multimap<Long, Long> collectEdge(String type) throws IOException;
+	public Multimap<Long, Long> collectEdges(String type) throws IOException;
 
 	/**
 	 * Collect the vertices with given property.
@@ -42,7 +41,7 @@ public interface RDFGraphDriverReadOnly {
 	 * @return Map of vertices with their property. ( V -> P )
 	 * @throws IOException
 	 */
-	public Map<Long, String> collectProperty(String type) throws IOException;
+	public Multimap<Long, String> collectProperties(String type) throws IOException;
 
 	/**
 	 * Count the vertices of a given type.
@@ -52,7 +51,7 @@ public interface RDFGraphDriverReadOnly {
 	 * @return
 	 * @throws IOException
 	 */
-	public long countVertex(String type) throws IOException;
+	public long countVertices(String type) throws IOException;
 
 	/**
 	 * Count the edges of a given type.
@@ -62,7 +61,7 @@ public interface RDFGraphDriverReadOnly {
 	 * @return
 	 * @throws IOException
 	 */
-	public long countEdge(String type) throws IOException;
+	public long countEdges(String type) throws IOException;
 
 	/**
 	 * Count the properties of a given type.
@@ -72,6 +71,6 @@ public interface RDFGraphDriverReadOnly {
 	 * @return
 	 * @throws IOException
 	 */
-	public long countProperty(String type) throws IOException;
+	public long countProperties(String type) throws IOException;
 	
 }

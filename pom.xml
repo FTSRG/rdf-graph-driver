@@ -24,6 +24,7 @@
 		<profile>
 			<id>file</id>
 			<modules>
+				<module>eu.mondo.driver.rdf</module>
 				<module>eu.mondo.driver.file</module>
 			</modules>
 		</profile>
@@ -31,6 +32,7 @@
 		<profile>
 			<id>fourstore</id>
 			<modules>
+				<module>eu.mondo.driver.rdf</module>
 				<module>eu.mondo.driver.fourstore</module>
 			</modules>
 		</profile>

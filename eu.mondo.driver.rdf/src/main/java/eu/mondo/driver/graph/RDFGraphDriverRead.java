@@ -41,7 +41,7 @@ public interface RDFGraphDriverRead {
 	 * @return Map of vertices with their property. ( V -> P )
 	 * @throws IOException
 	 */
-	public Multimap<Long, String> collectProperties(String type) throws IOException;
+	public Multimap<Long, Object> collectProperties(String type) throws IOException;
 
 	/**
 	 * Count the vertices of a given type.

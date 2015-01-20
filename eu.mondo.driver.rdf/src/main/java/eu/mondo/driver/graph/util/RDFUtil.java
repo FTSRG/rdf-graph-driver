@@ -1,5 +1,6 @@
 package eu.mondo.driver.graph.util;
 
+
 public class RDFUtil {
 
 	public static String brackets(String URL) {
@@ -9,5 +10,5 @@ public class RDFUtil {
 			return "<" + URL + ">";
 		}
 	}
-
+	
 }

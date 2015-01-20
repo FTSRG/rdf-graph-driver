@@ -10,8 +10,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.openrdf.model.Literal;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
+import org.openrdf.model.Value;
 import org.openrdf.model.impl.URIImpl;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandlerException;
@@ -24,12 +26,8 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
 import eu.mondo.driver.graph.RDFGraphDriverRead;
+import eu.mondo.driver.graph.util.LiteralParser;
 
-/**
- * Driver for collecting the nodes.
- * @author szarnyasg
- *
- */
 public class FileGraphDriverRead implements RDFGraphDriverRead {
 
 	protected static final String RDF_BASE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
@@ -99,15 +97,19 @@ public class FileGraphDriverRead implements RDFGraphDriverRead {
 	}
 
 	@Override
-	public Multimap<Long, String> collectProperties(final String type) {
-		Multimap<Long, String> properties = ArrayListMultimap.create();
+	public Multimap<Long, Object> collectProperties(final String type) {
+		Multimap<Long, Object> properties = ArrayListMultimap.create();
 		URI propertyType = new URIImpl(type);
 
 		for (Statement statement : statements) {
 			if (statement.getPredicate().equals(propertyType)) {
-				Long v = extractId(statement.getSubject().toString());
-				String s = statement.getObject().toString();
-				properties.put(v, s);
+				Long id = extractId(statement.getSubject().toString());
+				Value value = statement.getObject();
+				if (value instanceof Literal) {
+					Literal literal = (Literal) value;
+					Object object = LiteralParser.literalToObject(literal);
+					properties.put(id, object);
+				}				
 			}
 		}
 

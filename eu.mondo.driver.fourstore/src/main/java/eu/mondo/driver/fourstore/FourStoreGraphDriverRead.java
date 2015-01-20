@@ -12,6 +12,7 @@ package eu.mondo.driver.fourstore;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,15 +20,16 @@ import java.util.regex.Pattern;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
-import eu.mondo.driver.graph.RDFGraphDriverReadOnly;
+import eu.mondo.driver.graph.RDFGraphDriverRead;
+import eu.mondo.driver.graph.util.LiteralParser;
 import eu.mondo.driver.graph.util.RDFUtil;
 
-public class FourStoreGraphDriverReadOnly extends FourStoreGraphDriverQueryExecutor implements RDFGraphDriverReadOnly {
+public class FourStoreGraphDriverRead extends FourStoreGraphDriverQueryExecutor implements RDFGraphDriverRead {
 
 	protected static final String RDF_PREFIX = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 	protected static final String SPARQL_RDF_PREFIX = "PREFIX rdf: <" + RDF_PREFIX + "> ";
 
-	public FourStoreGraphDriverReadOnly(final String connectionString) {
+	public FourStoreGraphDriverRead(final String connectionString) {
 		super(connectionString);
 	}
 
@@ -95,8 +97,8 @@ public class FourStoreGraphDriverReadOnly extends FourStoreGraphDriverQueryExecu
 	}
 
 	@Override
-	public Multimap<Long, String> collectProperties(final String type) throws IOException {
-		final Multimap<Long, String> properties = ArrayListMultimap.create();
+	public Multimap<Long, Object> collectProperties(final String type) throws IOException {
+		final Multimap<Long, Object> properties = ArrayListMultimap.create();
 
 		final String query = String.format("SELECT ?a ?b WHERE { ?a %s ?b }", RDFUtil.brackets(type));
 		final BufferedReader reader = runQuery(query);
@@ -113,11 +115,41 @@ public class FourStoreGraphDriverReadOnly extends FourStoreGraphDriverQueryExecu
 			final Matcher matcher = pattern.matcher(line);
 			if (matcher.matches()) {
 				final Long id = new Long(matcher.group(1));
-				final String property = matcher.group(2);
-				properties.put(id, property);
+				final String propertyString = matcher.group(2);
+				final Object propertyObject = LiteralParser.stringToObject(propertyString);
+				
+				properties.put(id, propertyObject);
 			}
 		}
 		return properties;
+	}
+
+	public List<String> getVertexTypes() throws IOException {
+		String query = SPARQL_RDF_PREFIX + "SELECT DISTINCT ?x WHERE { ?_ rdf:type ?x }";
+		return getTypes(query);
+	}
+
+	public List<String> getEdgeTypes() throws IOException {
+		String query = "SELECT DISTINCT ?x WHERE { ?_a ?x ?_b } ";
+		return getTypes(query);
+	}
+
+	private List<String> getTypes(String query) throws IOException {
+		BufferedReader reader = runQuery(query);
+
+		List<String> types = new ArrayList<>();
+		String line;
+		
+		// skip the first line
+		reader.readLine();
+		
+		// read the rest
+		while ((line = reader.readLine()) != null) {
+			types.add(line);
+		}
+		reader.readLine();
+
+		return types;
 	}
 
 }

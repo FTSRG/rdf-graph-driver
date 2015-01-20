@@ -73,7 +73,7 @@ public class FourStoreGraphDriverReadOnly extends FourStoreGraphDriverQueryExecu
 
 		final String query = String.format("SELECT ?a ?b WHERE { ?a %s ?b }", RDFUtil.brackets(type));
 		final BufferedReader reader = runQuery(query);
-		
+
 		// collecting ids
 		final Pattern pattern = Pattern.compile("#x(.*?)>");
 		String line;

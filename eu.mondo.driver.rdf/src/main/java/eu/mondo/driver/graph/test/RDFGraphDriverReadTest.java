@@ -6,11 +6,11 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import eu.mondo.driver.graph.RDFGraphDriverReadOnly;
+import eu.mondo.driver.graph.RDFGraphDriverRead;
 
-public abstract class RDFGraphDriverReadOnlyTest {
+public abstract class RDFGraphDriverReadTest {
 
-	protected static RDFGraphDriverReadOnly driver;
+	protected static RDFGraphDriverRead driver;
 
 	protected static final String TRAINBENCHMARK_BASE = "http://www.semanticweb.org/ontologies/2011/1/TrainRequirementOntology.owl#";
 

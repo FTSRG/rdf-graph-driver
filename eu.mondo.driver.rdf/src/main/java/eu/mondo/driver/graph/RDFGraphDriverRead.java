@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.google.common.collect.Multimap;
 
-public interface RDFGraphDriverReadOnly {
+public interface RDFGraphDriverRead {
 
 	/**
 	 * Collect the vertices by given type.
@@ -73,4 +73,27 @@ public interface RDFGraphDriverReadOnly {
 	 */
 	public long countProperties(String type) throws IOException;
 	
+
+	/**
+	 * Returns the typeURIs for vertices.
+	 * 
+	 * * (( V )) --[ rdf:type ] -> [ typeURI ]
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	public List<String> getVertexTypes() throws IOException;
+
+	
+	/**
+	 * Returns the edgeURIs for edges.
+	 * 
+	 * (( S )) --[ edgeURI ] -> (( O ))
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	public List<String> getEdgeTypes() throws IOException;
+	
+
 }

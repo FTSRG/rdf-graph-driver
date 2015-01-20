@@ -23,14 +23,14 @@ import org.openrdf.rio.helpers.StatementCollector;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
-import eu.mondo.driver.graph.RDFGraphDriverReadOnly;
+import eu.mondo.driver.graph.RDFGraphDriverRead;
 
 /**
  * Driver for collecting the nodes.
  * @author szarnyasg
  *
  */
-public class FileGraphDriverReadOnly implements RDFGraphDriverReadOnly {
+public class FileGraphDriverRead implements RDFGraphDriverRead {
 
 	protected static final String RDF_BASE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 	protected static final String RDF_TYPE = RDF_BASE + "type";
@@ -40,7 +40,7 @@ public class FileGraphDriverReadOnly implements RDFGraphDriverReadOnly {
 	protected final String regex = ".*x(\\d+)";
 	protected final Pattern pattern = Pattern.compile(regex);
 
-	public FileGraphDriverReadOnly(final String connectionString) throws RDFParseException, RDFHandlerException, IOException {
+	public FileGraphDriverRead(final String connectionString) throws RDFParseException, RDFHandlerException, IOException {
 		RDFFormat format = Rio.getParserFormatForFileName(connectionString);
 		RDFParser parser = Rio.createParser(format);
 		StatementCollector collector = new StatementCollector(statements);
@@ -121,6 +121,16 @@ public class FileGraphDriverReadOnly implements RDFGraphDriverReadOnly {
 		} else {
 			throw new IllegalStateException("No match found.");
 		}
+	}
+
+	@Override
+	public List<String> getVertexTypes() throws IOException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<String> getEdgeTypes() throws IOException {
+		throw new UnsupportedOperationException();
 	}
 
 }

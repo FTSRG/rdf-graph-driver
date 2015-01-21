@@ -5,4 +5,4 @@ bin/
 deps/
 runtimeInfo/
 target/
-.iml
+*.iml

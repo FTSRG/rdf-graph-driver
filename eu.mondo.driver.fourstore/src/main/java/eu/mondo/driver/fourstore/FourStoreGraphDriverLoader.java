@@ -22,7 +22,7 @@ import eu.mondo.utils.UnixUtils;
 public class FourStoreGraphDriverLoader {
 
 	protected final Map<String, String> environment;
-	protected boolean showCommandOutput = false;
+	protected boolean showCommandOutput = true;
 	
 	public FourStoreGraphDriverLoader(final String connectionString) {
 		final String clusterName = connectionString.split("fourstore://")[1];
@@ -38,11 +38,12 @@ public class FourStoreGraphDriverLoader {
 	}
 	
 	public void load(final String modelPath) throws IOException, InterruptedException {
-		if (!new File(modelPath).exists()) {
+		File modelFile = new File(modelPath);
+		if (!modelFile.exists()) {
 			throw new FileNotFoundException(modelPath);
 		}
-		
-		UnixUtils.execResourceScript("4s-import.sh", modelPath, environment, showCommandOutput);
+
+		UnixUtils.execResourceScript("4s-import.sh", modelFile.getAbsolutePath(), environment, showCommandOutput);
 	}
 	
 	public void setShowCommandOutput(boolean showCommandOutput) {

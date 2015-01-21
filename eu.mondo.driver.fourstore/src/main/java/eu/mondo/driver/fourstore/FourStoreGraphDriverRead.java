@@ -74,6 +74,7 @@ public class FourStoreGraphDriverRead extends FourStoreGraphDriverQueryExecutor 
 		final Multimap<Long, Long> edges = ArrayListMultimap.create();
 
 		final String query = String.format("SELECT ?a ?b WHERE { ?a %s ?b }", RDFUtil.brackets(type));
+		System.out.println(query);
 		final BufferedReader reader = runQuery(query);
 
 		// collecting ids
@@ -85,9 +86,9 @@ public class FourStoreGraphDriverRead extends FourStoreGraphDriverQueryExecutor 
 			if (matcher.find()) {
 				final String sourceString = matcher.group(1);
 				if (matcher.find()) {
-					final String destinationString = matcher.group(1);
+					final String targetString = matcher.group(1);
 					final Long source = new Long(sourceString);
-					final Long destination = new Long(destinationString);
+					final Long destination = new Long(targetString);
 					edges.put(source, destination);
 				}
 			}

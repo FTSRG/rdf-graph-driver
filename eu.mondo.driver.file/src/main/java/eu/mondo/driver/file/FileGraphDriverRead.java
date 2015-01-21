@@ -103,13 +103,17 @@ public class FileGraphDriverRead implements RDFGraphDriverRead {
 
 		for (Statement statement : statements) {
 			if (statement.getPredicate().equals(propertyType)) {
-				Long id = extractId(statement.getSubject().toString());
-				Value value = statement.getObject();
-				if (value instanceof Literal) {
-					Literal literal = (Literal) value;
-					Object object = LiteralParser.literalToObject(literal);
-					properties.put(id, object);
-				}				
+				try {
+					Long id = extractId(statement.getSubject().toString());
+					Value value = statement.getObject();
+					if (value instanceof Literal) {
+						Literal literal = (Literal) value;
+						Object object = LiteralParser.literalToObject(literal);
+						properties.put(id, object);
+					}				
+				} catch (IllegalStateException e) {
+					// drop statement
+				}
 			}
 		}
 

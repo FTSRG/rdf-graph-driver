@@ -21,8 +21,9 @@ import eu.mondo.utils.UnixUtils;
 
 public class FourStoreGraphDriverLoader {
 
+	protected boolean showCommands = false;
+	protected boolean showCommandOutput = false;
 	protected final Map<String, String> environment;
-	protected boolean showCommandOutput = true;
 	
 	public FourStoreGraphDriverLoader(final String connectionString) {
 		final String clusterName = connectionString.split("fourstore://")[1];

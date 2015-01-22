@@ -147,7 +147,6 @@ package eu.mondo.driver.fourstore.test.temp;
 //
 //	@Test
 //	public void testVertices() throws IOException, InterruptedException {
-//		System.out.println("Testing for vertices");
 //		final String segmentType = brackets(BASE_PREFIX + "Segment");
 //
 //		long segmentCount = driver.getNodeCount(segmentType);

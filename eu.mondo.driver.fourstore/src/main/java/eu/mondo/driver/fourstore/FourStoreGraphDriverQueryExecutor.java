@@ -10,14 +10,17 @@ import java.util.regex.Pattern;
 import eu.mondo.utils.UnixUtils;
 
 public class FourStoreGraphDriverQueryExecutor extends FourStoreGraphDriverLoader {
-
+	
 	public FourStoreGraphDriverQueryExecutor(String connectionString) {
 		super(connectionString);
 	}
 
 	public BufferedReader runQuery(final String query) throws IOException {
 		final String command = String.format("4s-query $FOURSTORE_CLUSTER_NAME -f text -s -1 '%s'", query);
-
+		if (showCommands) {
+			System.out.println(command);
+		}
+			
 		final BufferedReader reader = UnixUtils.exec(command, environment);
 		return reader;
 	}

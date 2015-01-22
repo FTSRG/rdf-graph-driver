@@ -1,8 +1,8 @@
 package eu.mondo.driver.file;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -38,14 +38,14 @@ public class FileGraphDriverRead implements RDFGraphDriverRead {
     protected final String regex = ".*x(\\d+)";
     protected final Pattern pattern = Pattern.compile(regex);
 
-    public FileGraphDriverRead(final String connectionString) throws RDFParseException, RDFHandlerException, IOException {
-        RDFFormat format = Rio.getParserFormatForFileName(connectionString);
+    public FileGraphDriverRead(final String urlString) throws RDFParseException, RDFHandlerException, IOException {
+        RDFFormat format = Rio.getParserFormatForFileName(urlString);
         RDFParser parser = Rio.createParser(format);
         StatementCollector collector = new StatementCollector(statements);
         parser.setRDFHandler(collector);
 
-        String filePath = connectionString.split("rdf://")[1];
-        InputStream in = new FileInputStream(filePath);
+        URL url = new URL(urlString);
+        InputStream in = url.openStream();
         String baseURI = "";
         parser.parse(in, baseURI);
     }

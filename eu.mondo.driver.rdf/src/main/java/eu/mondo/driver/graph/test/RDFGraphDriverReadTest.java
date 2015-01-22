@@ -8,17 +8,9 @@ import org.junit.Test;
 
 import eu.mondo.driver.graph.RDFGraphDriverRead;
 
-public abstract class RDFGraphDriverReadTest {
+public abstract class RDFGraphDriverReadTest extends RDFGraphDriverTest {
 
 	protected static RDFGraphDriverRead driver;
-
-	protected static final String TRAINBENCHMARK_BASE = "http://www.semanticweb.org/ontologies/2011/1/TrainRequirementOntology.owl#";
-
-	private static final String SEGMENT_LENGTH = TRAINBENCHMARK_BASE + "Segment_length";
-	private static final String TRACKELEMENT_SENSOR = TRAINBENCHMARK_BASE + "TrackElement_sensor";
-	private static final String ROUTE_ROUTEDEFINITION = TRAINBENCHMARK_BASE + "Route_routeDefinition";
-	private static final String ROUTE_ENTRY = TRAINBENCHMARK_BASE + "Route_entry";
-	private static final String SWITCH = TRAINBENCHMARK_BASE + "Switch";
 
 	// collect methods
 

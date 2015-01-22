@@ -6,7 +6,7 @@ import java.util.Map;
 
 import com.google.common.collect.Multimap;
 
-public interface RDFGraphDriverWrite {
+public interface RDFGraphDriverReadWrite extends RDFGraphDriverRead {
 
 	// inserts/deletes single triple: ( sourceURI ) --[ type ]--> ( targetURI )
 	public void insertEdge(String sourceURI, String targetURI, String type) throws IOException;
@@ -26,7 +26,7 @@ public interface RDFGraphDriverWrite {
 	// inserts/deletes multiple triples: ( uri ) --[ rdf:type ]--> ( type )
 	public void insertVertices(List<String> uris, String type) throws IOException;
 
-	public void deleteVertices(List<String> uri) throws IOException;
+	public void deleteVertices(List<String> uris) throws IOException;
 
 	// deletes ( vertexURI ) --[ type ]--> ( * )
 	// inserts ( vertexURI ) --[ type ]--> ( value )

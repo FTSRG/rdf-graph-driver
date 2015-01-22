@@ -26,7 +26,7 @@ public class FourStoreGraphDriverLoader {
 	protected final Map<String, String> environment;
 	
 	public FourStoreGraphDriverLoader(final String connectionString) {
-		final String clusterName = connectionString.split("fourstore://")[1];
+		final String clusterName = connectionString;
 		environment = ImmutableMap.of("FOURSTORE_CLUSTER_NAME", clusterName);
 	}
 	
@@ -39,7 +39,7 @@ public class FourStoreGraphDriverLoader {
 	}
 	
 	public void load(final String modelPath) throws IOException, InterruptedException {
-		File modelFile = new File(modelPath);
+		final File modelFile = new File(modelPath);
 		if (!modelFile.exists()) {
 			throw new FileNotFoundException(modelPath);
 		}
@@ -47,7 +47,7 @@ public class FourStoreGraphDriverLoader {
 		UnixUtils.execResourceScript("4s-import.sh", modelFile.getAbsolutePath(), environment, showCommandOutput);
 	}
 	
-	public void setShowCommandOutput(boolean showCommandOutput) {
+	public void setShowCommandOutput(final boolean showCommandOutput) {
 		this.showCommandOutput = showCommandOutput;
 	}
 	

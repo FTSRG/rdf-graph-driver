@@ -32,6 +32,8 @@ import eu.mondo.utils.UnixUtils;
 
 public class FourStoreGraphDriverReadWrite extends FourStoreGraphDriverRead implements RDFGraphDriverReadWrite {
 
+	// note the following limitation of arguments in Bash and set the PARTITION_SIZE accordingly.
+	// "one argument must not be longer than MAX_ARG_STRLEN (131072)" (http://www.in-ulm.de/~mascheck/various/argmax/)
 	private static final int PARTITION_SIZE = 500;
 
 	public FourStoreGraphDriverReadWrite(final String connectionString) {
@@ -57,11 +59,11 @@ public class FourStoreGraphDriverReadWrite extends FourStoreGraphDriverRead impl
 
 		final List<List<String>> partitions = Lists.partition(uris, PARTITION_SIZE);
 		for (final List<String> partition : partitions) {
-			insertVerticesBlock(partition, type);
+			insertVerticesPartition(partition, type);
 		}
 	}
 
-	private void insertVerticesBlock(final Collection<String> uris, final String type) throws IOException {
+	private void insertVerticesPartition(final Collection<String> uris, final String type) throws IOException {
 		final StringBuilder insertQueryBuilder = new StringBuilder(SPARQL_RDF_PREFIX);
 		insertQueryBuilder.append("INSERT DATA {");
 		for (final String uri : uris) {
@@ -92,17 +94,17 @@ public class FourStoreGraphDriverReadWrite extends FourStoreGraphDriverRead impl
 		final List<List<String>> sourceVerticesPartitions = Lists.partition(sourceVertices, PARTITION_SIZE);
 		for (final List<String> sourceVerticesPartition : sourceVerticesPartitions) {
 
-			final Multimap<String, String> edgeBlock = ArrayListMultimap.create();
+			final Multimap<String, String> edgePartition = ArrayListMultimap.create();
 			for (final String sourceVertexURI : sourceVerticesPartition) {
 				final Collection<String> targetVertexURIs = edges.get(sourceVertexURI);
-				edgeBlock.putAll(sourceVertexURI, targetVertexURIs);
+				edgePartition.putAll(sourceVertexURI, targetVertexURIs);
 			}
 
-			insertEdgesBlock(edgeBlock, type);
+			insertEdgesPartition(edgePartition, type);
 		}
 	}
 
-	private void insertEdgesBlock(final Multimap<String, String> edges, final String type) throws IOException {
+	private void insertEdgesPartition(final Multimap<String, String> edges, final String type) throws IOException {
 		final StringBuilder insertQueryBuilder = new StringBuilder("INSERT DATA {");
 		edgesToTriples(edges, type, insertQueryBuilder);
 		insertQueryBuilder.append("}");
@@ -132,18 +134,18 @@ public class FourStoreGraphDriverReadWrite extends FourStoreGraphDriverRead impl
 		final List<List<String>> sourceVerticesPartitions = Lists.partition(sourceVertices, PARTITION_SIZE);
 		for (final List<String> sourceVerticesPartition : sourceVerticesPartitions) {
 
-			final Multimap<String, String> edgeBlock = ArrayListMultimap.create();
+			final Multimap<String, String> edgePartition = ArrayListMultimap.create();
 			for (final String sourceVertexURI : sourceVerticesPartition) {
 				final Collection<String> targetVertexURIs = edges.get(sourceVertexURI);
-				edgeBlock.putAll(sourceVertexURI, targetVertexURIs);
+				edgePartition.putAll(sourceVertexURI, targetVertexURIs);
 			}
 
-			insertEdgesWithVertexBlock(edgeBlock, edgeType, targetVertexType);
+			insertEdgesWithVertexPartition(edgePartition, edgeType, targetVertexType);
 		}
 
 	}
 
-	private void insertEdgesWithVertexBlock(final Multimap<String, String> edges, final String edgeType, final String targetVertexType)
+	private void insertEdgesWithVertexPartition(final Multimap<String, String> edges, final String edgeType, final String targetVertexType)
 			throws IOException {
 		final StringBuilder insertQueryBuilder = new StringBuilder(SPARQL_RDF_PREFIX);
 		insertQueryBuilder.append("INSERT DATA {");
@@ -177,17 +179,17 @@ public class FourStoreGraphDriverReadWrite extends FourStoreGraphDriverRead impl
 		final List<List<String>> vertexURIpartitions = Lists.partition(vertexURIs, PARTITION_SIZE);
 		for (final List<String> vertexURIpartition : vertexURIpartitions) {
 
-			final Map<String, Object> propertyBlock = new HashMap<>();
+			final Map<String, Object> propertyPartition = new HashMap<>();
 			for (final String vertexURI : vertexURIpartition) {
 				final Object value = properties.get(vertexURI);
-				propertyBlock.put(vertexURI, value);
+				propertyPartition.put(vertexURI, value);
 			}
 
-			updatePropertiesBlock(propertyBlock, type);
+			updatePropertiesPartition(propertyPartition, type);
 		}
 	}
 
-	private void updatePropertiesBlock(final Map<String, Object> properties, final String type) throws IOException {
+	private void updatePropertiesPartition(final Map<String, Object> properties, final String type) throws IOException {
 		final StringBuilder updateQueryBuilder = new StringBuilder(SPARQL_RDF_PREFIX);
 		int i = 0;
 
@@ -236,11 +238,11 @@ public class FourStoreGraphDriverReadWrite extends FourStoreGraphDriverRead impl
 
 		final List<List<String>> partitions = Lists.partition(uris, PARTITION_SIZE);
 		for (final List<String> partition : partitions) {
-			deleteVertexBlock(partition);
+			deleteVertexPartition(partition);
 		}
 	}
 
-	private void deleteVertexBlock(final List<String> uris) throws IOException {
+	private void deleteVertexPartition(final List<String> uris) throws IOException {
 		final StringBuilder deleteQueryBuilder = new StringBuilder();
 
 		// add a number to each variable number in the SPARQL query in order to make it unique
@@ -276,10 +278,10 @@ public class FourStoreGraphDriverReadWrite extends FourStoreGraphDriverRead impl
 			return;
 		}
 
-		deleteEdgesBlock(edges, type);
+		deleteEdgesPartition(edges, type);
 	}
 
-	private void deleteEdgesBlock(final Multimap<String, String> edges, final String type) throws IOException {
+	private void deleteEdgesPartition(final Multimap<String, String> edges, final String type) throws IOException {
 		final StringBuilder deleteQueryBuilder = new StringBuilder("DELETE DATA {");
 		edgesToTriples(edges, type, deleteQueryBuilder);
 		deleteQueryBuilder.append("}");

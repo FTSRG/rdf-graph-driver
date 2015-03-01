@@ -77,7 +77,7 @@ public class FourStoreGraphDriverRead extends FourStoreGraphDriverQueryExecutor 
 		final BufferedReader reader = runQuery(query);
 
 		// collecting ids
-		final Pattern pattern = Pattern.compile("#(.*?)>");
+		final Pattern pattern = Pattern.compile("#(\\d+)>");
 		String line;
 		while ((line = reader.readLine()) != null) {
 			final Matcher matcher = pattern.matcher(line);
@@ -107,7 +107,7 @@ public class FourStoreGraphDriverRead extends FourStoreGraphDriverQueryExecutor 
 		// @formatter:off
 		// <http://www.semanticweb.org/ontologies/2011/1/TrainRequirementOntology.owl#87947>	"653"^^<http://www.w3.org/2001/XMLSchema#int>
 		// @formatter:on
-		final String regex = "<.*(\\d+)>\\t(.*)";
+		final String regex = "<.*#(\\d+)>\\t(.*)";
 		final Pattern pattern = Pattern.compile(regex);
 
 		String line;

@@ -40,7 +40,7 @@ public class FourStoreGraphDriverReadWrite extends FourStoreGraphDriverRead impl
 		super(connectionString);
 	}
 
-	// C
+	// create
 
 	// insert vertices
 

@@ -31,6 +31,7 @@ public class FourStoreGraphDriverLoader {
 	}
 	
 	public void start() throws FileNotFoundException, IOException {
+		
 		UnixUtils.execResourceScript("4s-start.sh", environment, showCommandOutput);
 	}
 	

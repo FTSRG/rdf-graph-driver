@@ -29,7 +29,7 @@ public class FourStoreGraphDriverQueryExecutor extends FourStoreGraphDriverLoade
 		final BufferedReader reader = runQuery(query);
 
 		// example: <http://www.semanticweb.org/ontologies/2011/1/TrainRequirementOntology.owl#x87947>
-		final String regex = "<.*(\\d+)>";
+		final String regex = "<.*#(\\d+)>";
 		final Pattern pattern = Pattern.compile(regex);
 
 		final List<Long> results = new ArrayList<>();

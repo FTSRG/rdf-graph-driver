@@ -77,7 +77,7 @@ public class FourStoreGraphDriverRead extends FourStoreGraphDriverQueryExecutor 
 		final BufferedReader reader = runQuery(query);
 
 		// collecting ids
-		final Pattern pattern = Pattern.compile("#x(.*?)>");
+		final Pattern pattern = Pattern.compile("#(.*?)>");
 		String line;
 		while ((line = reader.readLine()) != null) {
 			final Matcher matcher = pattern.matcher(line);
@@ -105,9 +105,9 @@ public class FourStoreGraphDriverRead extends FourStoreGraphDriverQueryExecutor 
 
 		// example (tab-separated output)
 		// @formatter:off
-		// <http://www.semanticweb.org/ontologies/2011/1/TrainRequirementOntology.owl#x87947>	"653"^^<http://www.w3.org/2001/XMLSchema#int>
+		// <http://www.semanticweb.org/ontologies/2011/1/TrainRequirementOntology.owl#87947>	"653"^^<http://www.w3.org/2001/XMLSchema#int>
 		// @formatter:on
-		final String regex = "<.*x(\\d+)>\\t(.*)";
+		final String regex = "<.*(\\d+)>\\t(.*)";
 		final Pattern pattern = Pattern.compile(regex);
 
 		String line;
@@ -124,20 +124,22 @@ public class FourStoreGraphDriverRead extends FourStoreGraphDriverQueryExecutor 
 		return properties;
 	}
 
+	@Override
 	public List<String> getVertexTypes() throws IOException {
-		String query = SPARQL_RDF_PREFIX + "SELECT DISTINCT ?x WHERE { ?_ rdf:type ?x }";
+		final String query = SPARQL_RDF_PREFIX + "SELECT DISTINCT ?x WHERE { ?_ rdf:type ?x }";
 		return getTypes(query);
 	}
 
+	@Override
 	public List<String> getEdgeTypes() throws IOException {
-		String query = "SELECT DISTINCT ?x WHERE { ?_a ?x ?_b } ";
+		final String query = "SELECT DISTINCT ?x WHERE { ?_a ?x ?_b } ";
 		return getTypes(query);
 	}
 
-	private List<String> getTypes(String query) throws IOException {
-		BufferedReader reader = runQuery(query);
+	private List<String> getTypes(final String query) throws IOException {
+		final BufferedReader reader = runQuery(query);
 
-		List<String> types = new ArrayList<>();
+		final List<String> types = new ArrayList<>();
 		String line;
 		
 		// skip the first line

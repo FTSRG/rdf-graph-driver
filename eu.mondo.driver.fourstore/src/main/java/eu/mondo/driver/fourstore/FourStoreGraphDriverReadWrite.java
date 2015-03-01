@@ -290,7 +290,7 @@ public class FourStoreGraphDriverReadWrite extends FourStoreGraphDriverRead impl
 
 	// helper methods
 
-	protected void runUpdate(final String query) throws IOException {
+	public void runUpdate(final String query) throws IOException {
 		final String command = String.format("4s-update $FOURSTORE_CLUSTER_NAME '%s'", query);
 
 		if (showCommands) {

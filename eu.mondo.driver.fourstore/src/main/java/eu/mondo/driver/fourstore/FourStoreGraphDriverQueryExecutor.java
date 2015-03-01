@@ -11,7 +11,7 @@ import eu.mondo.utils.UnixUtils;
 
 public class FourStoreGraphDriverQueryExecutor extends FourStoreGraphDriverLoader {
 	
-	public FourStoreGraphDriverQueryExecutor(String connectionString) {
+	public FourStoreGraphDriverQueryExecutor(final String connectionString) {
 		super(connectionString);
 	}
 
@@ -29,7 +29,7 @@ public class FourStoreGraphDriverQueryExecutor extends FourStoreGraphDriverLoade
 		final BufferedReader reader = runQuery(query);
 
 		// example: <http://www.semanticweb.org/ontologies/2011/1/TrainRequirementOntology.owl#x87947>
-		final String regex = "<.*x(\\d+)>";
+		final String regex = "<.*(\\d+)>";
 		final Pattern pattern = Pattern.compile(regex);
 
 		final List<Long> results = new ArrayList<>();

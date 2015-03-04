@@ -32,21 +32,22 @@ public class FileGraphDriverRead implements RDFGraphDriverRead {
 
     protected static final String RDF_BASE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
     protected static final String RDF_TYPE = RDF_BASE + "type";
+    protected static final String ID_PREFIX = "_";
 
     protected final Collection<Statement> statements = new HashSet<>();
 
-    protected final String regex = ".*x(\\d+)";
+    protected final String regex = ".*" + ID_PREFIX + "(\\d+)";
     protected final Pattern pattern = Pattern.compile(regex);
 
     public FileGraphDriverRead(final String urlString) throws RDFParseException, RDFHandlerException, IOException {
-        RDFFormat format = Rio.getParserFormatForFileName(urlString);
-        RDFParser parser = Rio.createParser(format);
-        StatementCollector collector = new StatementCollector(statements);
+        final RDFFormat format = Rio.getParserFormatForFileName(urlString);
+        final RDFParser parser = Rio.createParser(format);
+        final StatementCollector collector = new StatementCollector(statements);
         parser.setRDFHandler(collector);
 
-        URL url = new URL(urlString);
-        InputStream in = url.openStream();
-        String baseURI = "";
+        final URL url = new URL(urlString);
+        final InputStream in = url.openStream();
+        final String baseURI = "";
         parser.parse(in, baseURI);
     }
 
@@ -56,25 +57,25 @@ public class FileGraphDriverRead implements RDFGraphDriverRead {
     }
 
     @Override
-    public long countEdges(String type) {
+    public long countEdges(final String type) {
         return collectEdges(type).size();
     }
 
     @Override
-    public long countProperties(String type) {
+    public long countProperties(final String type) {
         return collectProperties(type).size();
     }
 
     @Override
     public List<Long> collectVertices(final String type) {
-        List<Long> vertices = new ArrayList<>();
+        final List<Long> vertices = new ArrayList<>();
 
-        URI rdfType = new URIImpl(RDF_TYPE);
-        URI vertexType = new URIImpl(type);
+        final URI rdfType = new URIImpl(RDF_TYPE);
+        final URI vertexType = new URIImpl(type);
 
-        for (Statement statement : statements) {
+        for (final Statement statement : statements) {
             if (statement.getPredicate().equals(rdfType) && statement.getObject().equals(vertexType)) {
-                Long id = extractId(statement.getSubject().toString());
+                final Long id = extractId(statement.getSubject().toString());
                 vertices.add(id);
             }
         }
@@ -83,16 +84,16 @@ public class FileGraphDriverRead implements RDFGraphDriverRead {
 
     @Override
     public Multimap<Long, Long> collectEdges(final String type) {
-        Multimap<Long, Long> edges = ArrayListMultimap.create();
-        URI edgeType = new URIImpl(type);
+        final Multimap<Long, Long> edges = ArrayListMultimap.create();
+        final URI edgeType = new URIImpl(type);
 
-        for (Statement statement : statements) {
+        for (final Statement statement : statements) {
             if (statement.getPredicate().equals(edgeType)) {
                 try {
-                    Long subjectId = extractId(statement.getSubject().toString());
-                    Long objectId = extractId(statement.getObject().toString());
+                    final Long subjectId = extractId(statement.getSubject().toString());
+                    final Long objectId = extractId(statement.getObject().toString());
                     edges.put(subjectId, objectId);
-                } catch (IllegalStateException e) {
+                } catch (final IllegalStateException e) {
                     // drop statement if id is not valid
                 }
             }
@@ -102,17 +103,17 @@ public class FileGraphDriverRead implements RDFGraphDriverRead {
 
     @Override
     public Multimap<Long, Object> collectProperties(final String type) {
-        Multimap<Long, Object> properties = ArrayListMultimap.create();
-        URI propertyType = new URIImpl(type);
+        final Multimap<Long, Object> properties = ArrayListMultimap.create();
+        final URI propertyType = new URIImpl(type);
 
-        for (Statement statement : statements) {
+        for (final Statement statement : statements) {
             if (statement.getPredicate().equals(propertyType)) {
 
-                Long id = extractId(statement.getSubject().toString());
-                Value value = statement.getObject();
+                final Long id = extractId(statement.getSubject().toString());
+                final Value value = statement.getObject();
                 if (value instanceof Literal) {
-                    Literal literal = (Literal) value;
-                    Object object = LiteralParser.literalToObject(literal);
+                    final Literal literal = (Literal) value;
+                    final Object object = LiteralParser.literalToObject(literal);
                     properties.put(id, object);
                 }
             }

@@ -11,6 +11,8 @@ import eu.mondo.utils.UnixUtils;
 
 public class FourStoreGraphDriverQueryExecutor extends FourStoreGraphDriverLoader {
 	
+	protected final String ID_PREFIX = "_";
+
 	public FourStoreGraphDriverQueryExecutor(final String connectionString) {
 		super(connectionString);
 	}
@@ -28,8 +30,8 @@ public class FourStoreGraphDriverQueryExecutor extends FourStoreGraphDriverLoade
 	public List<Long> queryIds(final String query) throws IOException {
 		final BufferedReader reader = runQuery(query);
 
-		// example: <http://www.semanticweb.org/ontologies/2011/1/TrainRequirementOntology.owl#x87947>
-		final String regex = "<.*#(\\d+)>";
+		// example: <http://www.semanticweb.org/ontologies/2011/1/TrainRequirementOntology.owl#_87947>
+		final String regex = "<.*#" + ID_PREFIX + "(\\d+)>";
 		final Pattern pattern = Pattern.compile(regex);
 
 		final List<Long> results = new ArrayList<>();

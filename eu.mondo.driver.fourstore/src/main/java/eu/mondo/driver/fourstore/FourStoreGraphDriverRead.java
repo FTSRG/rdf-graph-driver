@@ -77,7 +77,7 @@ public class FourStoreGraphDriverRead extends FourStoreGraphDriverQueryExecutor 
 		final BufferedReader reader = runQuery(query);
 
 		// collecting ids
-		final Pattern pattern = Pattern.compile("#(\\d+)>");
+		final Pattern pattern = Pattern.compile("#" + ID_PREFIX +"(\\d+)>");
 		String line;
 		while ((line = reader.readLine()) != null) {
 			final Matcher matcher = pattern.matcher(line);
@@ -105,9 +105,9 @@ public class FourStoreGraphDriverRead extends FourStoreGraphDriverQueryExecutor 
 
 		// example (tab-separated output)
 		// @formatter:off
-		// <http://www.semanticweb.org/ontologies/2011/1/TrainRequirementOntology.owl#87947>	"653"^^<http://www.w3.org/2001/XMLSchema#int>
+		// <http://www.semanticweb.org/ontologies/2011/1/TrainRequirementOntology.owl#[ID_PREFIX]87947>	"653"^^<http://www.w3.org/2001/XMLSchema#int>
 		// @formatter:on
-		final String regex = "<.*#(\\d+)>\\t(.*)";
+		final String regex = "<.*#" + ID_PREFIX + "(\\d+)>\\t(.*)";
 		final Pattern pattern = Pattern.compile(regex);
 
 		String line;
@@ -117,7 +117,7 @@ public class FourStoreGraphDriverRead extends FourStoreGraphDriverQueryExecutor 
 				final Long id = new Long(matcher.group(1));
 				final String propertyString = matcher.group(2);
 				final Object propertyObject = LiteralParser.stringToObject(propertyString);
-				
+
 				properties.put(id, propertyObject);
 			}
 		}
@@ -141,10 +141,10 @@ public class FourStoreGraphDriverRead extends FourStoreGraphDriverQueryExecutor 
 
 		final List<String> types = new ArrayList<>();
 		String line;
-		
+
 		// skip the first line
 		reader.readLine();
-		
+
 		// read the rest
 		while ((line = reader.readLine()) != null) {
 			types.add(line);
@@ -154,4 +154,18 @@ public class FourStoreGraphDriverRead extends FourStoreGraphDriverQueryExecutor 
 		return types;
 	}
 
+	public boolean ask(final String query) throws IOException {
+		final BufferedReader reader = runQuery(query);
+		final String line = reader.readLine();
+		
+		switch (line) {
+		case "true":
+			return true;
+		case "false":
+			return false;
+		default:
+			throw new IOException("Result for ASK query should be 'true' or 'false'. Received '" + line + "' instead.");
+		}
+	}
+	
 }

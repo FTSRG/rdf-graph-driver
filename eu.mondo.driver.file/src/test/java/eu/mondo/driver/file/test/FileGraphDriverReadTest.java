@@ -13,7 +13,7 @@ public class FileGraphDriverReadTest extends RDFGraphDriverReadTest {
 	
 	@Test
 	public void testRead() throws RDFParseException, RDFHandlerException, IOException {
-		String filePath = this.getClass().getClassLoader().getResource("models/railway-xform-1.ttl").toString();
+		String filePath = this.getClass().getClassLoader().getResource("models/railway-repair-1.ttl").toString();
 		driver = new FileGraphDriverRead(filePath);
 	}
 

@@ -41,7 +41,7 @@ public class FourStoreGraphDriverWriteTest extends RDFGraphDriverWriteTest {
 		driver = fourStoreDriver = new FourStoreGraphDriverReadWrite(connectionString);
 
 		fourStoreDriver.start();
-		final File file = new File("src/test/resources/models/railway-xform-1.ttl");
+		final File file = new File("src/test/resources/models/railway-repair-1.ttl");
 		fourStoreDriver.load(file.getAbsolutePath());
 	}
 

@@ -14,6 +14,7 @@ package eu.mondo.driver.graph.test;
 public abstract class RDFGraphDriverTest {
 
 	protected static final String BASE_URI = "http://www.semanticweb.org/ontologies/2011/1/TrainRequirementOntology.owl#";
+	protected static final String ID_PREFIX = "_";
 
 	protected static final String SEGMENT = BASE_URI + "Segment";
 	protected static final String SEGMENT_LENGTH = BASE_URI + "Segment_length";

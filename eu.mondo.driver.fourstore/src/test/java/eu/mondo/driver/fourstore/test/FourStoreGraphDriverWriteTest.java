@@ -222,7 +222,7 @@ public class FourStoreGraphDriverWriteTest extends RDFGraphDriverWriteTest {
 	}
 
 	private String id(final long l) {
-		return BASE_URI + "x" + l;
+		return BASE_URI + ID_PREFIX + l;
 	}
 
 	private String number(final long l) {

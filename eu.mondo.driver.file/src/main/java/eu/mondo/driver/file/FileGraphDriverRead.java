@@ -127,7 +127,7 @@ public class FileGraphDriverRead implements RDFGraphDriverRead {
         if (matcher.matches()) {
             return new Long(matcher.group(1));
         } else {
-            throw new IllegalStateException("No match found.");
+            throw new IllegalStateException("No match found for ID pattern "+pattern+" in URL "+string);
         }
     }
 

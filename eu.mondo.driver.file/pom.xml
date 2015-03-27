@@ -7,8 +7,6 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>eu.mondo.driver.file</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-
 	<properties>
 		<sesame.version>2.7.9</sesame.version>
 	</properties>

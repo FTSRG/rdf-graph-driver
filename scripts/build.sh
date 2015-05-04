@@ -14,7 +14,7 @@ while [ "$1" != "" ]; do
 	shift
 done
 
-export MAVEN_OPTS="-Xmx512m -XX:MaxPermSize=256m"
+export MAVEN_OPTS="-Xmx512m"
 
 if [ $resolveDependencies ]; then
 	scripts/resolve-dependencies.sh || exit 1

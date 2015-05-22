@@ -49,6 +49,7 @@ public class FileGraphDriverRead implements RDFGraphDriverRead {
         final InputStream in = url.openStream();
         final String baseURI = "";
         parser.parse(in, baseURI);
+        in.close();
     }
 
     @Override

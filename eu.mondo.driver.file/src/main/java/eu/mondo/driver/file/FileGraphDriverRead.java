@@ -3,54 +3,55 @@ package eu.mondo.driver.file;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.openrdf.model.Literal;
-import org.openrdf.model.Statement;
-import org.openrdf.model.URI;
-import org.openrdf.model.Value;
-import org.openrdf.model.impl.URIImpl;
 import org.openrdf.rio.RDFFormat;
+import org.openrdf.rio.RDFHandler;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 import org.openrdf.rio.RDFParser;
 import org.openrdf.rio.Rio;
-import org.openrdf.rio.helpers.StatementCollector;
 
-import com.google.common.collect.ArrayListMultimap;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Multimap;
 
 import eu.mondo.driver.graph.RDFGraphDriverRead;
-import eu.mondo.driver.graph.util.LiteralParser;
 
 public class FileGraphDriverRead implements RDFGraphDriverRead {
 
-    protected static final String RDF_BASE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
-    protected static final String RDF_TYPE = RDF_BASE + "type";
-    protected static final String ID_PREFIX = "_";
-
-    protected final Collection<Statement> statements = new HashSet<>();
-
-    protected final String regex = ".*" + ID_PREFIX + "(\\d+)";
-    protected final Pattern pattern = Pattern.compile(regex);
+	private final URL url;
+	private final RDFFormat format;
 
     public FileGraphDriverRead(final String urlString) throws RDFParseException, RDFHandlerException, IOException {
-        final RDFFormat format = Rio.getParserFormatForFileName(urlString);
-        final RDFParser parser = Rio.createParser(format);
-        final StatementCollector collector = new StatementCollector(statements);
-        parser.setRDFHandler(collector);
+    	url = new URL(urlString);
+    	format = Rio.getParserFormatForFileName(urlString);
+    }
 
-        final URL url = new URL(urlString);
+    private void parse(RDFHandler handler) throws IOException, RDFParseException, RDFHandlerException {
+    	final RDFParser parser = Rio.createParser(format);
+    	parser.setRDFHandler(handler);
         final InputStream in = url.openStream();
-        final String baseURI = "";
-        parser.parse(in, baseURI);
+        parser.parse(in, "");
         in.close();
     }
+
+    // Vertices
+
+    @Override
+    public List<Long> collectVertices(final String type) {
+    	return vertexCache.getUnchecked(type);
+    }
+
+    private final LoadingCache<String, List<Long>> vertexCache = CacheBuilder.newBuilder().build(new CacheLoader<String, List<Long>>() {
+		@Override
+		public List<Long> load(String type) throws Exception {
+			VertexCollector collector = new VertexCollector(type);
+			parse(collector);
+			return collector.getVertices();
+		}
+    });
 
     @Override
     public long countVertices(final String type) {
@@ -58,88 +59,55 @@ public class FileGraphDriverRead implements RDFGraphDriverRead {
     }
 
     @Override
-    public long countEdges(final String type) {
-        return collectEdges(type).size();
-    }
-
-    @Override
-    public long countProperties(final String type) {
-        return collectProperties(type).size();
-    }
-
-    @Override
-    public List<Long> collectVertices(final String type) {
-        final List<Long> vertices = new ArrayList<>();
-
-        final URI rdfType = new URIImpl(RDF_TYPE);
-        final URI vertexType = new URIImpl(type);
-
-        for (final Statement statement : statements) {
-            if (statement.getPredicate().equals(rdfType) && statement.getObject().equals(vertexType)) {
-                final Long id = extractId(statement.getSubject().toString());
-                vertices.add(id);
-            }
-        }
-        return vertices;
-    }
-
-    @Override
-    public Multimap<Long, Long> collectEdges(final String type) {
-        final Multimap<Long, Long> edges = ArrayListMultimap.create();
-        final URI edgeType = new URIImpl(type);
-
-        for (final Statement statement : statements) {
-            if (statement.getPredicate().equals(edgeType)) {
-                try {
-                    final Long subjectId = extractId(statement.getSubject().toString());
-                    final Long objectId = extractId(statement.getObject().toString());
-                    edges.put(subjectId, objectId);
-                } catch (final IllegalStateException e) {
-                    // drop statement if id is not valid
-                }
-            }
-        }
-        return edges;
-    }
-
-    @Override
-    public Multimap<Long, Object> collectProperties(final String type) {
-        final Multimap<Long, Object> properties = ArrayListMultimap.create();
-        final URI propertyType = new URIImpl(type);
-
-        for (final Statement statement : statements) {
-            if (statement.getPredicate().equals(propertyType)) {
-
-                final Long id = extractId(statement.getSubject().toString());
-                final Value value = statement.getObject();
-                if (value instanceof Literal) {
-                    final Literal literal = (Literal) value;
-                    final Object object = LiteralParser.literalToObject(literal);
-                    properties.put(id, object);
-                }
-            }
-        }
-
-        return properties;
-    }
-
-    protected Long extractId(final String string) {
-        final Matcher matcher = pattern.matcher(string);
-        if (matcher.matches()) {
-            return new Long(matcher.group(1));
-        } else {
-            throw new IllegalStateException("No match found for ID pattern "+pattern+" in URL "+string);
-        }
-    }
-
-    @Override
     public List<String> getVertexTypes() throws IOException {
         throw new UnsupportedOperationException();
     }
 
+    // Edges
+
+    @Override
+    public Multimap<Long, Long> collectEdges(final String type) {
+    	return edgeCache.getUnchecked(type);
+    }
+
+    private final LoadingCache<String, Multimap<Long, Long>> edgeCache = CacheBuilder.newBuilder().build(new CacheLoader<String, Multimap<Long, Long>>() {
+		@Override
+		public Multimap<Long, Long> load(String type) throws Exception {
+			EdgeCollector collector = new EdgeCollector(type);
+			parse(collector);
+			return collector.getEdges();
+		}
+    });
+
+    @Override
+    public long countEdges(final String type) {
+        return collectEdges(type).size();
+    }
+    
     @Override
     public List<String> getEdgeTypes() throws IOException {
         throw new UnsupportedOperationException();
+    }
+
+    // Properties
+
+    @Override
+    public Multimap<Long, Object> collectProperties(final String type) {
+    	return propertyCache.getUnchecked(type);
+    }
+
+    private final LoadingCache<String, Multimap<Long, Object>> propertyCache = CacheBuilder.newBuilder().build(new CacheLoader<String, Multimap<Long, Object>>() {
+		@Override
+		public Multimap<Long, Object> load(String type) throws Exception {
+			PropertyCollector collector = new PropertyCollector(type);
+			parse(collector);
+			return collector.getProperties();
+		}
+    });
+
+    @Override
+    public long countProperties(final String type) {
+        return collectProperties(type).size();
     }
 
 }

@@ -41,8 +41,12 @@ public class FourStoreGraphDriverLoader {
 	
 	public void load(final String modelPath) throws IOException, InterruptedException {
 		final File modelFile = new File(modelPath);
+		load(modelFile);
+	}
+
+	public void load(final File modelFile) throws IOException, InterruptedException {
 		if (!modelFile.exists()) {
-			throw new FileNotFoundException(modelPath);
+			throw new FileNotFoundException(modelFile.getAbsolutePath());
 		}
 
 		UnixUtils.execResourceScript("4s-import.sh", modelFile.getAbsolutePath(), environment, showCommandOutput);

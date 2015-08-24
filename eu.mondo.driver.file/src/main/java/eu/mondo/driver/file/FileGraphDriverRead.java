@@ -2,6 +2,7 @@ package eu.mondo.driver.file;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import org.openrdf.rio.RDFParseException;
 import org.openrdf.rio.RDFParser;
 import org.openrdf.rio.Rio;
 
+import com.google.common.base.Throwables;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -24,9 +26,13 @@ public class FileGraphDriverRead implements RDFGraphDriverRead {
 	private final URL url;
 	private final RDFFormat format;
 
-    public FileGraphDriverRead(final String urlString) throws RDFParseException, RDFHandlerException, IOException {
-    	url = new URL(urlString);
-    	format = Rio.getParserFormatForFileName(urlString);
+    public FileGraphDriverRead(final String urlString) {
+    	try {
+			url = new URL(urlString);
+			format = Rio.getParserFormatForFileName(urlString);
+		} catch (MalformedURLException e) {
+			throw Throwables.propagate(e);
+		}
     }
 
     private void parse(RDFHandler handler) throws IOException, RDFParseException, RDFHandlerException {

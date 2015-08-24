@@ -1,8 +1,6 @@
 4store-graph-driver
 ===================
 
-[![Build status](https://travis-ci.org/FTSRG/4store-graph-driver.svg?branch=master)](https://travis-ci.org/FTSRG/4store-graph-driver)
-
 This repository contains the Maven project for the Java driver of 4store, used in the Train Benchmark and IncQuery-D. The primary goals of the projects are the following:
 * support a graph-like operation,
 * provide high transaction performance by using the command-line interface of 4store (4s-query, 4s-update, etc.) instead of the 4store HTTP server (4s-httpd).

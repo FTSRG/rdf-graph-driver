@@ -29,26 +29,9 @@ Use the `scripts/build-with-dependencies.sh` script to build this project with i
 
 If you want to build the `4store-graph-driver` project only, use the `scripts/build.sh` script.
 
-Running 4store on a single node
--------------------------------
+Running 4store
+--------------
 
-* Run the `4s-init-single-node.sh` script to initialize the `/etc/4store.conf` file.
+* Run the `4s-init.sh` script to initialize the `/etc/4store.conf` file. If you have a cluster, pass the host name list as argument, e.g. `vm0;vm1`.
 
 * Use the `4s-start.sh` script to start 4store.
-
-
-Running 4store in a cluster
----------------------------
-
-* Edit the `/etc/4store.conf` file on the master node ("the coordinator"):
-
-	```
-	[4s-boss]
-	discovery = sole
-	nodes = vm0;vm1
-
-	[trainbenchmark_cluster]
-	port = 7890
-	```
-
-* Use the `4s-start.sh` script to start the cluster.

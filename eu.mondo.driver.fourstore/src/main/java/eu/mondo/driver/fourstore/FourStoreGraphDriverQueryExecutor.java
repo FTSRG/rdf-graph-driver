@@ -1,50 +1,65 @@
 package eu.mondo.driver.fourstore;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.io.InputStream;
+import java.util.Collection;
+
+import org.openrdf.query.BindingSet;
+import org.openrdf.query.TupleQueryResultHandlerException;
+import org.openrdf.query.resultio.QueryResultParseException;
+import org.openrdf.query.resultio.text.tsv.SPARQLResultsTSVParser;
 
 import eu.mondo.utils.UnixUtils;
 
 public class FourStoreGraphDriverQueryExecutor extends FourStoreGraphDriverLoader {
-	
+
 	protected final String ID_PREFIX = "_";
+
+	protected final SPARQLResultsTSVParser parser = new SPARQLResultsTSVParser();
 
 	public FourStoreGraphDriverQueryExecutor(final String connectionString) {
 		super(connectionString);
 	}
 
-	public BufferedReader runQuery(final String query) throws IOException {
-		final String command = String.format("4s-query $FOURSTORE_CLUSTER_NAME -f text -s -1 '%s'", query);
+	public Collection<BindingSet> runQuery(final String queryDefinition) throws IOException {
+		final String command = String.format("4s-query $FOURSTORE_CLUSTER_NAME -f text -s -1 '%s'", queryDefinition);
 		if (showCommands) {
 			System.out.println(command);
 		}
-			
-		final BufferedReader reader = UnixUtils.exec(command, environment);
-		return reader;
-	}
 
-	public List<Long> queryIds(final String query) throws IOException {
-		final BufferedReader reader = runQuery(query);
+		final BindingSetCollector bindingSetCollector = new BindingSetCollector();
+		parser.setQueryResultHandler(bindingSetCollector);
 
-		// example: <http://www.semanticweb.org/ontologies/2011/1/TrainRequirementOntology.owl#_87947>
-		final String regex = "<.*#" + ID_PREFIX + "(\\d+)>";
-		final Pattern pattern = Pattern.compile(regex);
-
-		final List<Long> results = new ArrayList<>();
-
-		String line;
-		while ((line = reader.readLine()) != null) {
-			final Matcher matcher = pattern.matcher(line);
-			if (matcher.matches()) {
-				final Long id = new Long(matcher.group(1));
-				results.add(id);
-			}
+		final InputStream is = UnixUtils.execToStream(command, environment);
+		try {
+			parser.parse(is);
+		} catch (TupleQueryResultHandlerException | QueryResultParseException e) {
+			throw new IOException(e);
 		}
-		return results;
+		final Collection<BindingSet> bindingSets = bindingSetCollector.getBindingSets();
+
+		return bindingSets;
 	}
-	
+
+	// public List<Long> queryIds(final String query) throws IOException {
+	// final Collection<BindingSet> bindingSets = runQuery(query);
+
+	// System.out.println(bindingSets);
+	// // example: <http://www.semanticweb.org/ontologies/2011/1/TrainRequirementOntology.owl#_87947>
+	// final String regex = "<.*#" + ID_PREFIX + "(\\d+)>";
+	// final Pattern pattern = Pattern.compile(regex);
+	//
+	// final List<Long> results = new ArrayList<>();
+	//
+	// String line;
+	// while ((line = reader.readLine()) != null) {
+	// final Matcher matcher = pattern.matcher(line);
+	// if (matcher.matches()) {
+	// final Long id = new Long(matcher.group(1));
+	// results.add(id);
+	// }
+	// }
+	// return null;
+	// }
+
 }

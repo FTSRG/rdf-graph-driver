@@ -12,10 +12,12 @@ package eu.mondo.driver.fourstore;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.openrdf.query.BindingSet;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -37,7 +39,7 @@ public class FourStoreGraphDriverRead extends FourStoreGraphDriverQueryExecutor 
 	public long countVertices(final String type) throws IOException {
 		final String query = SPARQL_RDF_PREFIX
 				+ String.format("SELECT (COUNT(?x) AS ?count) WHERE {?x rdf:type %s}", RDFUtil.brackets(type));
-		final BufferedReader reader = runQuery(query);
+		final BufferedReader reader = null;
 
 		// skip the first line
 		reader.readLine();
@@ -49,7 +51,7 @@ public class FourStoreGraphDriverRead extends FourStoreGraphDriverQueryExecutor 
 	@Override
 	public long countEdges(final String type) throws IOException {
 		final String query = String.format("SELECT (COUNT(?x) AS ?count) WHERE {?x %s ?y}", RDFUtil.brackets(type));
-		final BufferedReader reader = runQuery(query);
+		final BufferedReader reader = null;
 
 		// skip the first line
 		reader.readLine();
@@ -65,8 +67,12 @@ public class FourStoreGraphDriverRead extends FourStoreGraphDriverQueryExecutor 
 
 	@Override
 	public List<Long> collectVertices(final String type) throws IOException {
-		final String queryString = String.format(SPARQL_RDF_PREFIX + "SELECT ?a WHERE { ?a rdf:type %s }", RDFUtil.brackets(type));
-		return queryIds(queryString);
+		final String queryDefinition = String.format(SPARQL_RDF_PREFIX + "SELECT ?a WHERE { ?a rdf:type %s }", RDFUtil.brackets(type));
+
+		final Collection<BindingSet> binding = runQuery(queryDefinition);
+		System.out.println(binding);
+		final List<Long> ids = null;
+		return ids;
 	}
 
 	@Override
@@ -74,10 +80,10 @@ public class FourStoreGraphDriverRead extends FourStoreGraphDriverQueryExecutor 
 		final Multimap<Long, Long> edges = ArrayListMultimap.create();
 
 		final String query = String.format("SELECT ?a ?b WHERE { ?a %s ?b }", RDFUtil.brackets(type));
-		final BufferedReader reader = runQuery(query);
+		final BufferedReader reader = null;
 
 		// collecting ids
-		final Pattern pattern = Pattern.compile("#" + ID_PREFIX +"(\\d+)>");
+		final Pattern pattern = Pattern.compile("#" + ID_PREFIX + "(\\d+)>");
 		String line;
 		while ((line = reader.readLine()) != null) {
 			final Matcher matcher = pattern.matcher(line);
@@ -101,7 +107,7 @@ public class FourStoreGraphDriverRead extends FourStoreGraphDriverQueryExecutor 
 		final Multimap<Long, Object> properties = ArrayListMultimap.create();
 
 		final String query = String.format("SELECT ?a ?b WHERE { ?a %s ?b }", RDFUtil.brackets(type));
-		final BufferedReader reader = runQuery(query);
+		final BufferedReader reader = null;
 
 		// example (tab-separated output)
 		// @formatter:off
@@ -137,35 +143,37 @@ public class FourStoreGraphDriverRead extends FourStoreGraphDriverQueryExecutor 
 	}
 
 	private List<String> getTypes(final String query) throws IOException {
-		final BufferedReader reader = runQuery(query);
+		// final BufferedReader reader = runQuery(query);
+		final Collection<BindingSet> bindingSet = runQuery(query);
 
-		final List<String> types = new ArrayList<>();
-		String line;
+		// final List<String> types = new ArrayList<>();
+		// String line;
+		//
+		// // skip the first line
+		// reader.readLine();
+		//
+		// // read the rest
+		// while ((line = reader.readLine()) != null) {
+		// types.add(line);
+		// }
+		// reader.readLine();
 
-		// skip the first line
-		reader.readLine();
-
-		// read the rest
-		while ((line = reader.readLine()) != null) {
-			types.add(line);
-		}
-		reader.readLine();
-
-		return types;
+		return null;
 	}
 
 	public boolean ask(final String query) throws IOException {
-		final BufferedReader reader = runQuery(query);
-		final String line = reader.readLine();
-		
-		switch (line) {
-		case "true":
-			return true;
-		case "false":
-			return false;
-		default:
-			throw new IOException("Result for ASK query should be 'true' or 'false'. Received '" + line + "' instead.");
-		}
+		// final BufferedReader reader = runQuery(query);
+		// final String line = reader.readLine();
+		//
+		// switch (line) {
+		// case "true":
+		// return true;
+		// case "false":
+		// return false;
+		// default:
+		// throw new IOException("Result for ASK query should be 'true' or 'false'. Received '" + line + "' instead.");
+		// }
+		return false;
 	}
-	
+
 }

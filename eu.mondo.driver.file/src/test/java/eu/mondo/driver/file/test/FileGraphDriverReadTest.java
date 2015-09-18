@@ -1,5 +1,6 @@
 package eu.mondo.driver.file.test;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.junit.Test;
@@ -10,11 +11,13 @@ import eu.mondo.driver.file.FileGraphDriverRead;
 import eu.mondo.driver.graph.test.RDFGraphDriverReadTest;
 
 public class FileGraphDriverReadTest extends RDFGraphDriverReadTest {
-	
+
 	@Test
 	public void testRead() throws RDFParseException, RDFHandlerException, IOException {
-		String filePath = this.getClass().getClassLoader().getResource("models/railway-repair-1.ttl").toString();
-		driver = new FileGraphDriverRead(filePath);
+		final String filePath = "../eu.mondo.driver.rdf/src/test/resources/railway-example.ttl";
+		final String absolutePath = new File(filePath).getAbsolutePath();
+		final String uri = "file:///" + absolutePath;
+		driver = new FileGraphDriverRead(uri);
 	}
 
 }

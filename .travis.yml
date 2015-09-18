@@ -1,6 +1,4 @@
 script:
   - eu.mondo.driver.fourstore/scripts/4s-install.sh
   - scripts/resolve-dependencies.sh
-  - export FOURSTORE_SHOW_COMMANDS=true
-  - export FOURSTORE_SHOW_COMMAND_OUTPUT=true
   - scripts/build.sh

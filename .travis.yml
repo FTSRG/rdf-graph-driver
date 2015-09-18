@@ -1,3 +1,4 @@
 script:
+  - eu.mondo.driver.fourstore/scripts/4s-install.sh
   - scripts/resolve-dependencies.sh
   - scripts/build.sh

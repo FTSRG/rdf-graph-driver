@@ -20,4 +20,8 @@ if [ $resolveDependencies ]; then
 	scripts/resolve-dependencies.sh || exit 1
 fi
 
-mvn clean install -P file || exit 1
+if [ $skipTests ]; then
+	mvn clean install -DskipTests || exit 1
+else
+	mvn clean install || exit 1
+fi

@@ -17,6 +17,8 @@
 
 	<modules>
 		<module>eu.mondo.driver.rdf</module>
+		<module>eu.mondo.driver.file</module>
+		<module>eu.mondo.driver.fourstore</module>	
 	</modules>
 
 	<profiles>

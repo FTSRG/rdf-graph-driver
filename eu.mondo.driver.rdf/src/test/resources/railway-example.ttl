@@ -1,0 +1,13 @@
+@prefix : <http://www.semanticweb.org/ontologies/2015/trainbenchmark#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+:_1 a :Segment  ;
+	a :TrackElement ;
+	:length "120"^^xsd:int .
+
+:_2 a :Switch  ;
+	a :TrackElement ;
+	:currentPosition :POSITION_LEFT .
+
+:_1 :connectsTo :_2 .
+

@@ -32,7 +32,7 @@ public class FourStoreGraphDriverLoader {
 		if ("true".equals(fourStoreShowCommands)) {
 			showCommands = true;
 		}
-		final String fourStoreShowCommandOutput = System.getenv("FOURSTORE_SHOW_COMMAND_OUTOUT");
+		final String fourStoreShowCommandOutput = System.getenv("FOURSTORE_SHOW_COMMAND_OUTPUT");
 		if ("true".equals(fourStoreShowCommandOutput)) {
 			showCommandOutput = true;
 		}

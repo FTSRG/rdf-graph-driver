@@ -11,6 +11,7 @@
 package eu.mondo.driver.fourstore;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -19,20 +20,46 @@ import org.openrdf.model.Literal;
 import org.openrdf.model.Resource;
 import org.openrdf.model.Value;
 import org.openrdf.query.BindingSet;
+import org.openrdf.query.TupleQueryResultHandlerException;
+import org.openrdf.query.resultio.QueryResultParseException;
+import org.openrdf.query.resultio.text.tsv.SPARQLResultsTSVParser;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
 import eu.mondo.driver.graph.RDFGraphDriverRead;
 import eu.mondo.driver.graph.util.RDFUtil;
+import eu.mondo.utils.UnixUtils;
 
-public class FourStoreGraphDriverRead extends FourStoreGraphDriverQueryExecutor implements RDFGraphDriverRead {
+public class FourStoreGraphDriverRead extends FourStoreGraphDriverLoader implements RDFGraphDriverRead {
 
+	protected final SPARQLResultsTSVParser parser = new SPARQLResultsTSVParser();
+	protected static final String ID_PREFIX = "_";
 	protected static final String RDF_PREFIX = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 	protected static final String SPARQL_RDF_PREFIX = "PREFIX rdf: <" + RDF_PREFIX + "> ";
 
 	public FourStoreGraphDriverRead(final String connectionString) {
 		super(connectionString);
+	}
+
+	public Collection<BindingSet> runQuery(final String queryDefinition) throws IOException {
+		final String command = String.format("4s-query $FOURSTORE_CLUSTER_NAME -f text -s -1 '%s'", queryDefinition);
+		if (showCommands) {
+			System.out.println(command);
+		}
+
+		final BindingSetCollector bindingSetCollector = new BindingSetCollector();
+		parser.setQueryResultHandler(bindingSetCollector);
+
+		final InputStream is = UnixUtils.execToStream(command, environment, showCommands);
+		try {
+			parser.parse(is);
+		} catch (TupleQueryResultHandlerException | QueryResultParseException e) {
+			throw new IOException(e);
+		}
+		final Collection<BindingSet> bindingSets = bindingSetCollector.getBindingSets();
+
+		return bindingSets;
 	}
 
 	@Override

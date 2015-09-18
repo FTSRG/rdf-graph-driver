@@ -30,12 +30,11 @@
 	</build>
 
 	<dependencies>
-
 		<dependency>
 			<groupId>eu.mondo.driver</groupId>
 			<artifactId>eu.mondo.driver.rdf</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-
 	</dependencies>
+	
 </project>

@@ -1,6 +1,0 @@
-script:
-  - cd scripts
-  - ./4s-install.sh
-  - ./4s-init-single-node.sh
-  - cat /etc/4store.conf
-  - ./build.sh --resolveDependencies

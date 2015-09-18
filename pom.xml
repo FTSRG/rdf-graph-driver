@@ -18,11 +18,10 @@
 	<modules>
 		<module>eu.mondo.driver.rdf</module>
 		<module>eu.mondo.driver.file</module>
-		<module>eu.mondo.driver.fourstore</module>	
+		<module>eu.mondo.driver.fourstore</module>
 	</modules>
 
 	<profiles>
-
 		<profile>
 			<id>file</id>
 			<modules>
@@ -30,7 +29,6 @@
 				<module>eu.mondo.driver.file</module>
 			</modules>
 		</profile>
-
 		<profile>
 			<id>fourstore</id>
 			<modules>
@@ -38,7 +36,6 @@
 				<module>eu.mondo.driver.fourstore</module>
 			</modules>
 		</profile>
-
 	</profiles>
 
 	<build>
@@ -132,35 +129,6 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<extensions>true</extensions>
-				<executions>
-					<execution>
-						<id>bundle-manifest</id>
-						<phase>process-classes</phase>
-						<goals>
-							<goal>manifest</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<instructions>
-						<Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
-					</instructions>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-					</archive>
-				</configuration>
-			</plugin>
-		</plugins>
 	</build>
 
 </project>

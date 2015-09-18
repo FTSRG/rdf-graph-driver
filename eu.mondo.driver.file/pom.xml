@@ -7,9 +7,6 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>eu.mondo.driver.file</artifactId>
-	<properties>
-		<sesame.version>2.7.9</sesame.version>
-	</properties>
 
 	<build>
 		<plugins>
@@ -33,18 +30,11 @@
 	</build>
 
 	<dependencies>
-
 		<dependency>
 			<groupId>eu.mondo.driver</groupId>
 			<artifactId>eu.mondo.driver.rdf</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-
-		<dependency>
-			<groupId>org.openrdf.sesame</groupId>
-			<artifactId>sesame-runtime</artifactId>
-			<version>${sesame.version}</version>
-		</dependency>
-
 	</dependencies>
+	
 </project>

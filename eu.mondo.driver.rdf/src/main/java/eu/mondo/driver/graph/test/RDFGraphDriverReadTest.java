@@ -12,69 +12,53 @@ public abstract class RDFGraphDriverReadTest extends RDFGraphDriverTest {
 
 	protected static RDFGraphDriverRead driver;
 
-	private static final int SEGMENT_LENGTH_COUNT = 4835;
-	private static final int TRACKELEMENT_SENSOR_COUNT = 5772;
-	private static final int ROUTE_ROUTEDEFINITION_COUNT = 843;
-	private static final int ROUTE_ENTRY_COUNT = 16;
-	private static final int SWITCH_COUNT = 217;
-
 	// collect methods
 
 	// vertices
 	@Test
-	public void testSegment() throws IOException {
+	public void testCollectSegment() throws IOException {
+		assertEquals(SEGMENT_COUNT, driver.collectVertices(SEGMENT).size());
+	}
+
+	@Test
+	public void testCollectSwitch() throws IOException {
 		assertEquals(SWITCH_COUNT, driver.collectVertices(SWITCH).size());
 	}
 
 	// edges
 	@Test
-	public void testRoute_entry() throws IOException {
-		assertEquals(ROUTE_ENTRY_COUNT, driver.collectEdges(ROUTE_ENTRY).size());
-	}
-
-	@Test
-	public void testRoute_routeDefinition() throws IOException {
-		assertEquals(ROUTE_ROUTEDEFINITION_COUNT, driver.collectEdges(ROUTE_ROUTEDEFINITION).size());
-	}
-
-	@Test
-	public void testTrackElement_sensor() throws IOException {
-		assertEquals(TRACKELEMENT_SENSOR_COUNT, driver.collectEdges(TRACKELEMENT_SENSOR).size());
+	public void testCollectConnectsTo() throws IOException {
+		assertEquals(CONNECTSTO_COUNT, driver.collectEdges(CONNECTSTO).size());
 	}
 
 	// properties
 	@Test
-	public void testSegment_length() throws IOException {
-		assertEquals(SEGMENT_LENGTH_COUNT, driver.collectProperties(SEGMENT_LENGTH).size());
+	public void testCollectLength() throws IOException {
+		assertEquals(LENGTH_COUNT, driver.collectProperties(LENGTH).size());
 	}
 
 	// count methods
 
-	// vertices
 	@Test
-	public void testCountVertexSegment() throws IOException {
+	public void testCountSegment() throws IOException {
+		assertEquals(SEGMENT_COUNT, driver.countVertices(SEGMENT));
+	}
+
+	@Test
+	public void testCountSwitch() throws IOException {
 		assertEquals(SWITCH_COUNT, driver.countVertices(SWITCH));
 	}
 
 	// edges
 	@Test
-	public void testCountEdgeRoute_entry() throws IOException {
-		assertEquals(ROUTE_ENTRY_COUNT, driver.countEdges(ROUTE_ENTRY));
-	}
-
-	@Test
-	public void testCountEdgeRoute_routeDefinition() throws IOException {
-		assertEquals(ROUTE_ROUTEDEFINITION_COUNT, driver.countEdges(ROUTE_ROUTEDEFINITION));
-	}
-
-	@Test
-	public void testCountEdgeTrackElement_sensor() throws IOException {
-		assertEquals(TRACKELEMENT_SENSOR_COUNT, driver.countEdges(TRACKELEMENT_SENSOR));
+	public void testCountConnectsTo() throws IOException {
+		assertEquals(CONNECTSTO_COUNT, driver.countEdges(CONNECTSTO));
 	}
 
 	// properties
 	@Test
-	public void testCountPropertySegment_length() throws IOException {
-		assertEquals(4835, driver.countProperties(SEGMENT_LENGTH));
+	public void testCountLength() throws IOException {
+		assertEquals(LENGTH_COUNT, driver.countProperties(LENGTH));
 	}
+
 }

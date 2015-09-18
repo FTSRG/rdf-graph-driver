@@ -16,11 +16,11 @@ public class FourStoreGraphDriverReadTest extends RDFGraphDriverReadTest {
 
 	@BeforeClass
 	public static void setUp() throws FileNotFoundException, IOException, InterruptedException {
-		final String connectionString = "trainbenchmark_cluster";
+		final String connectionString = "TRAINBENCHMARK_CLUSTER";
 		driver = fourStoreDriver = new FourStoreGraphDriverRead(connectionString);
 
 		fourStoreDriver.start();
-		final File file = new File("src/test/resources/models/railway-repair-1.ttl");
+		final File file = new File("../eu.mondo.driver.rdf/src/test/resources/railway-example.ttl");
 		fourStoreDriver.load(file.getAbsolutePath());
 	}
 

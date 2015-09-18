@@ -16,7 +16,7 @@ public class FourStoreGraphDriverReadTest extends RDFGraphDriverReadTest {
 
 	@BeforeClass
 	public static void setUp() throws FileNotFoundException, IOException, InterruptedException {
-		final String connectionString = "trainbenchmark_cluster";
+		final String connectionString = "TRAINBENCHMARK_CLUSTER";
 		driver = fourStoreDriver = new FourStoreGraphDriverRead(connectionString);
 
 		fourStoreDriver.start();

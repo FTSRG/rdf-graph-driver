@@ -41,12 +41,11 @@ public class FourStoreGraphDriverLoader {
 	}
 
 	public void start() throws FileNotFoundException, IOException {
-
-		UnixUtils.execResourceScript("4s-start.sh", environment, showCommandOutput);
+		UnixUtils.execResourceScript("4s-start.sh", environment, showCommands, showCommandOutput);
 	}
 
 	public void stop() throws FileNotFoundException, IOException {
-		UnixUtils.execResourceScript("4s-stop.sh", environment, showCommandOutput);
+		UnixUtils.execResourceScript("4s-stop.sh", environment, showCommands, showCommandOutput);
 	}
 
 	public void load(final String modelPath) throws IOException, InterruptedException {
@@ -59,7 +58,7 @@ public class FourStoreGraphDriverLoader {
 			throw new FileNotFoundException(modelFile.getAbsolutePath());
 		}
 
-		UnixUtils.execResourceScript("4s-import.sh", modelFile.getAbsolutePath(), environment, showCommandOutput);
+		UnixUtils.execResourceScript("4s-import.sh", modelFile.getAbsolutePath(), environment, showCommands, showCommandOutput);
 	}
 
 	public void setShowCommandOutput(final boolean showCommandOutput) {

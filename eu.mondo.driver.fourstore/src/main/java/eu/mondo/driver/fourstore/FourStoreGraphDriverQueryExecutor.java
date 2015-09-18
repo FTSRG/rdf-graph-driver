@@ -30,7 +30,7 @@ public class FourStoreGraphDriverQueryExecutor extends FourStoreGraphDriverLoade
 		final BindingSetCollector bindingSetCollector = new BindingSetCollector();
 		parser.setQueryResultHandler(bindingSetCollector);
 
-		final InputStream is = UnixUtils.execToStream(command, environment);
+		final InputStream is = UnixUtils.execToStream(command, environment, showCommands);
 		try {
 			parser.parse(is);
 		} catch (TupleQueryResultHandlerException | QueryResultParseException e) {

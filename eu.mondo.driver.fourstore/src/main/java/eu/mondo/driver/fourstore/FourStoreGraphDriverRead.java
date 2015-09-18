@@ -10,20 +10,20 @@
  *******************************************************************************/
 package eu.mondo.driver.fourstore;
 
-import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+import org.openrdf.model.Literal;
+import org.openrdf.model.Resource;
+import org.openrdf.model.Value;
 import org.openrdf.query.BindingSet;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
 import eu.mondo.driver.graph.RDFGraphDriverRead;
-import eu.mondo.driver.graph.util.LiteralParser;
 import eu.mondo.driver.graph.util.RDFUtil;
 
 public class FourStoreGraphDriverRead extends FourStoreGraphDriverQueryExecutor implements RDFGraphDriverRead {
@@ -37,27 +37,30 @@ public class FourStoreGraphDriverRead extends FourStoreGraphDriverQueryExecutor 
 
 	@Override
 	public long countVertices(final String type) throws IOException {
-		final String query = SPARQL_RDF_PREFIX
+		final String queryDefinition = SPARQL_RDF_PREFIX
 				+ String.format("SELECT (COUNT(?x) AS ?count) WHERE {?x rdf:type %s}", RDFUtil.brackets(type));
-		final BufferedReader reader = null;
+		final Collection<BindingSet> bindingSets = runQuery(queryDefinition);
+		for (final BindingSet bindingSet : bindingSets) {
+			final Literal l = (Literal) bindingSet.getBinding("count").getValue();
+			final long count = l.longValue();
+			return count;
+		}
 
-		// skip the first line
-		reader.readLine();
+		throw new IOException("Database did not respond.");
 
-		final String line = reader.readLine();
-		return Integer.parseInt(line);
 	}
 
 	@Override
 	public long countEdges(final String type) throws IOException {
-		final String query = String.format("SELECT (COUNT(?x) AS ?count) WHERE {?x %s ?y}", RDFUtil.brackets(type));
-		final BufferedReader reader = null;
+		final String queryDefinition = String.format("SELECT (COUNT(?x) AS ?count) WHERE {?x %s ?y}", RDFUtil.brackets(type));
+		final Collection<BindingSet> bindingSets = runQuery(queryDefinition);
+		for (final BindingSet bindingSet : bindingSets) {
+			final Literal l = (Literal) bindingSet.getBinding("count").getValue();
+			final long count = l.longValue();
+			return count;
+		}
 
-		// skip the first line
-		reader.readLine();
-
-		final String line = reader.readLine();
-		return Integer.parseInt(line);
+		throw new IOException("Database did not respond.");
 	}
 
 	@Override
@@ -66,79 +69,58 @@ public class FourStoreGraphDriverRead extends FourStoreGraphDriverQueryExecutor 
 	}
 
 	@Override
-	public List<Long> collectVertices(final String type) throws IOException {
-		final String queryDefinition = String.format(SPARQL_RDF_PREFIX + "SELECT ?a WHERE { ?a rdf:type %s }", RDFUtil.brackets(type));
+	public List<Resource> collectVertices(final String type) throws IOException {
+		final List<Resource> vertices = new ArrayList<>();
 
-		final Collection<BindingSet> binding = runQuery(queryDefinition);
-		System.out.println(binding);
-		final List<Long> ids = null;
-		return ids;
+		final String queryDefinition = String.format(SPARQL_RDF_PREFIX + "SELECT ?x WHERE { ?x rdf:type %s }", RDFUtil.brackets(type));
+		final Collection<BindingSet> bindingSets = runQuery(queryDefinition);
+		for (final BindingSet bindingSet : bindingSets) {
+			final Resource vertex = (Resource) bindingSet.getBinding("x").getValue();
+			vertices.add(vertex);
+		}
+
+		return vertices;
 	}
 
 	@Override
-	public Multimap<Long, Long> collectEdges(final String type) throws IOException {
-		final Multimap<Long, Long> edges = ArrayListMultimap.create();
+	public Multimap<Resource, Resource> collectEdges(final String type) throws IOException {
+		final Multimap<Resource, Resource> edges = ArrayListMultimap.create();
 
-		final String query = String.format("SELECT ?a ?b WHERE { ?a %s ?b }", RDFUtil.brackets(type));
-		final BufferedReader reader = null;
-
-		// collecting ids
-		final Pattern pattern = Pattern.compile("#" + ID_PREFIX + "(\\d+)>");
-		String line;
-		while ((line = reader.readLine()) != null) {
-			final Matcher matcher = pattern.matcher(line);
-
-			if (matcher.find()) {
-				final String sourceString = matcher.group(1);
-				if (matcher.find()) {
-					final String targetString = matcher.group(1);
-					final Long source = new Long(sourceString);
-					final Long destination = new Long(targetString);
-					edges.put(source, destination);
-				}
-			}
+		final String queryDefinition = String.format("SELECT ?x ?y WHERE { ?x %s ?y }", RDFUtil.brackets(type));
+		final Collection<BindingSet> bindingSets = runQuery(queryDefinition);
+		for (final BindingSet bindingSet : bindingSets) {
+			final Resource v1 = (Resource) bindingSet.getBinding("x").getValue();
+			final Resource v2 = (Resource) bindingSet.getBinding("y").getValue();
+			edges.put(v1, v2);
 		}
 
 		return edges;
 	}
 
 	@Override
-	public Multimap<Long, Object> collectProperties(final String type) throws IOException {
-		final Multimap<Long, Object> properties = ArrayListMultimap.create();
+	public Multimap<Resource, Value> collectProperties(final String type) throws IOException {
+		final Multimap<Resource, Value> properties = ArrayListMultimap.create();
 
-		final String query = String.format("SELECT ?a ?b WHERE { ?a %s ?b }", RDFUtil.brackets(type));
-		final BufferedReader reader = null;
-
-		// example (tab-separated output)
-		// @formatter:off
-		// <http://www.semanticweb.org/ontologies/2011/1/TrainRequirementOntology.owl#[ID_PREFIX]87947>	"653"^^<http://www.w3.org/2001/XMLSchema#int>
-		// @formatter:on
-		final String regex = "<.*#" + ID_PREFIX + "(\\d+)>\\t(.*)";
-		final Pattern pattern = Pattern.compile(regex);
-
-		String line;
-		while ((line = reader.readLine()) != null) {
-			final Matcher matcher = pattern.matcher(line);
-			if (matcher.matches()) {
-				final Long id = new Long(matcher.group(1));
-				final String propertyString = matcher.group(2);
-				final Object propertyObject = LiteralParser.stringToObject(propertyString);
-
-				properties.put(id, propertyObject);
-			}
+		final String queryDefinition = String.format("SELECT ?x ?y WHERE { ?x %s ?y }", RDFUtil.brackets(type));
+		final Collection<BindingSet> bindingSets = runQuery(queryDefinition);
+		for (final BindingSet bindingSet : bindingSets) {
+			final Resource v = (Resource) bindingSet.getBinding("x").getValue();
+			final Value p = bindingSet.getBinding("y").getValue();
+			properties.put(v, p);
 		}
+
 		return properties;
 	}
 
 	@Override
 	public List<String> getVertexTypes() throws IOException {
-		final String query = SPARQL_RDF_PREFIX + "SELECT DISTINCT ?x WHERE { ?_ rdf:type ?x }";
+		final String query = SPARQL_RDF_PREFIX + "SELECT DISTINCT ?t WHERE { ?_ rdf:type ?t }";
 		return getTypes(query);
 	}
 
 	@Override
 	public List<String> getEdgeTypes() throws IOException {
-		final String query = "SELECT DISTINCT ?x WHERE { ?_a ?x ?_b } ";
+		final String query = "SELECT DISTINCT ?t WHERE { ?_x ?t ?_y } ";
 		return getTypes(query);
 	}
 

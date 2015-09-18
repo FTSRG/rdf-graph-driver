@@ -3,6 +3,9 @@ package eu.mondo.driver.graph;
 import java.io.IOException;
 import java.util.List;
 
+import org.openrdf.model.Resource;
+import org.openrdf.model.Value;
+
 import com.google.common.collect.Multimap;
 
 public interface RDFGraphDriverRead {
@@ -17,7 +20,7 @@ public interface RDFGraphDriverRead {
 	 * @return List of the URIs of the vertices.
 	 * @throws IOException
 	 */
-	public List<Long> collectVertices(String type) throws IOException;
+	public List<Resource> collectVertices(String type) throws IOException;
 
 	/**
 	 * Collect edges with given URI.
@@ -29,7 +32,7 @@ public interface RDFGraphDriverRead {
 	 * @return Multimap of vertex pairs connected. ( S -> O )
 	 * @throws IOException
 	 */
-	public Multimap<Long, Long> collectEdges(String type) throws IOException;
+	public Multimap<Resource, Resource> collectEdges(String type) throws IOException;
 
 	/**
 	 * Collect the vertices with given property.
@@ -41,7 +44,7 @@ public interface RDFGraphDriverRead {
 	 * @return Map of vertices with their property. ( V -> P )
 	 * @throws IOException
 	 */
-	public Multimap<Long, Object> collectProperties(String type) throws IOException;
+	public Multimap<Resource, Value> collectProperties(String type) throws IOException;
 
 	/**
 	 * Count the vertices of a given type.
@@ -72,7 +75,6 @@ public interface RDFGraphDriverRead {
 	 * @throws IOException
 	 */
 	public long countProperties(String type) throws IOException;
-	
 
 	/**
 	 * Returns the typeURIs for vertices.
@@ -84,7 +86,6 @@ public interface RDFGraphDriverRead {
 	 */
 	public List<String> getVertexTypes() throws IOException;
 
-	
 	/**
 	 * Returns the edgeURIs for edges.
 	 * 
@@ -94,6 +95,5 @@ public interface RDFGraphDriverRead {
 	 * @throws IOException
 	 */
 	public List<String> getEdgeTypes() throws IOException;
-	
 
 }

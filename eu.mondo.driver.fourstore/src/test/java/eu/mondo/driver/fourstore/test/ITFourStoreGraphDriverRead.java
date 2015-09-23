@@ -10,7 +10,7 @@ import org.junit.BeforeClass;
 import eu.mondo.driver.fourstore.FourStoreGraphDriverRead;
 import eu.mondo.driver.graph.test.RDFGraphDriverReadTest;
 
-public class FourStoreGraphDriverReadTest extends RDFGraphDriverReadTest {
+public class ITFourStoreGraphDriverRead extends RDFGraphDriverReadTest {
 
 	protected static FourStoreGraphDriverRead fourStoreDriver;
 

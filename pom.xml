@@ -19,6 +19,7 @@
 		<module>eu.mondo.driver.rdf</module>
 		<module>eu.mondo.driver.file</module>
 		<module>eu.mondo.driver.fourstore</module>
+		<module>eu.mondo.driver.sparql</module>
 	</modules>
 
 	<profiles>
